@@ -1,0 +1,48 @@
+{
+  "name": "plugin-alias",
+  "description": "Provides an Oclif plugin to configure @rollup/plugin-alias for rollup-runner.",
+  "version": "0.0.0",
+  "author": "typhonrt",
+  "bugs": "https://github.com/typhonjs-node-bundle/plugin-alias/issues",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1.26.0",
+    "@oclif/plugin-help": "^3.2.1",
+    "@oclif/test": "^1.2.8",
+    "chai": "^4.2.0",
+    "eslint": "^5.16.0",
+    "globby": "^10.0.2",
+    "mocha": "^5.2.0",
+    "nyc": "^14.1.1",
+    "typhonjs-config-eslint": "^0.6.0"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "files": [
+    "/npm-shrinkwrap.json",
+    "/oclif.manifest.json",
+    "/src"
+  ],
+  "homepage": "https://github.com/typhonjs-node-bundle/plugin-alias",
+  "keywords": [
+    "oclif-plugin"
+  ],
+  "license": "MPL2.0",
+  "oclif": {
+    "hooks": {
+      "init": [
+        "./src/hooks/init/init"
+      ]
+    }
+  },
+  "repository": "typhonjs-node-bundle/plugin-alias",
+  "scripts": {
+    "postpack": "rm -f oclif.manifest.json",
+    "posttest": "eslint .",
+    "prepack": "oclif-dev manifest && oclif-dev readme",
+    "test": "nyc mocha --forbid-only \"test/**/*.test.js\"",
+    "version": "oclif-dev readme && git add README.md"
+  }
+}
