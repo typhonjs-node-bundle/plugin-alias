@@ -1,6 +1,10 @@
+const { flags }   = require('@oclif/command');
+
 /**
  * Handles interfacing with the plugin manager adding event bindings to pass back a configured
  * instance of `@rollup/plugin-alias`.
+ *
+ * @example fvttdev build --alias somepackage=newpackage'
  */
 class PluginHandler
 {
@@ -49,6 +53,31 @@ module.exports = async function(opts)
 {
    process.pluginManager.add({ name: 'plugin-alias', instance: PluginHandler });
 
+   // Adds flags for various built in commands like `build`.
+   s_ADD_FLAGS(opts.id);
+
    // TODO REMOVE
    process.stdout.write(`plugin-alias init hook running ${opts.id}\n`);
 };
+
+/**
+ * Adds flags for various built in commands like `build`.
+ *
+ * @param {string} commandID - ID of the command being run.
+ */
+function s_ADD_FLAGS(commandID)
+{
+   switch (commandID)
+   {
+      // Add all built in flags for the build command.
+      case 'build':
+         process.eventbus.trigger('oclif:flaghandler:add', {
+            alias: flags.string({
+               'char': 'a',
+               'description': 'Map imports to different modules',
+               'multiple': true
+            })
+         });
+         break;
+   }
+}
