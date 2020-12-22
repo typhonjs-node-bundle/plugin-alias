@@ -19,6 +19,9 @@
     "nyc": "^14.1.1",
     "typhonjs-config-eslint": "^0.6.0"
   },
+  "peerDependencies": {
+    "rollup": "^2.x"
+  },
   "engines": {
     "node": ">=8.0.0"
   },
@@ -31,7 +34,7 @@
   "keywords": [
     "oclif-plugin"
   ],
-  "license": "MPL2.0",
+  "license": "MPL-2.0",
   "oclif": {
     "hooks": {
       "init": [
