@@ -57,6 +57,16 @@ module.exports = async function(opts)
 /**
  * Adds flags for various built in commands like `build`.
  *
+ * To add handling of the *.env environment variables a double processing stage occurs in fvttdev build command. The
+ * flags are processed to pull out the --env flag then if present `dotenv` is used to load the given *.env file.
+ * We take advantage of the `default` definition for the `alias` flag below by providing a function that checks the
+ * associated environment variable `DEPLOY_ALIAS`. If it is present then it is treated as a JSON array and any
+ * parsing errors will halt execution of the CLI w/ the parse error shown to the user.
+ *
+ * A verification function is provided for FlagHandler which ensures that each entry is formatted as <xxx>=<yyy>
+ * splitting the left and right hand values formatting the output into the key / value arrangement expected by
+ * `@rollup/plugin-alias`. Errors  will be thrown if the formatting is incorrect.
+ *
  * @param {string} command - ID of the command being run.
  */
 function s_ADD_FLAGS(command)
@@ -72,8 +82,78 @@ function s_ADD_FLAGS(command)
                alias: flags.string({
                   'char': 'a',
                   'description': 'Map imports to different modules.',
-                  'multiple': true
+                  'multiple': true,
+                  'default': function()
+                  {
+                     if (typeof process.env.DEPLOY_ALIAS === 'string')
+                     {
+                        let result = void 0;
+
+                        // Treat it as a JSON array.
+                        try { result = JSON.parse(process.env.DEPLOY_ALIAS); }
+                        catch (error)
+                        {
+                           const parseError = new Error(
+                            `Could not parse 'DEPLOY_ALIAS' as a JSON array;\n${error.message}`);
+
+                           // Set magic boolean for global CLI error handler to skip treating this as a fatal error.
+                           parseError.$$bundler_fatal = false;
+
+                           throw parseError;
+                        }
+
+                        if (!Array.isArray(result))
+                        {
+                           const parseError = new Error(`Please format 'DEPLOY_ALIAS' as a JSON array.`);
+
+                           // Set magic boolean for global CLI error handler to skip treating this as a fatal error.
+                           parseError.$$bundler_fatal = false;
+
+                           throw parseError;
+                        }
+
+                        return result;
+                     }
+
+                     return void 0;
+                  }
                })
+            },
+            verify: function(flags)
+            {
+               const regex = /(.+)=(.+)/;
+
+               // Alias should always be an array
+               if (Array.isArray(flags.alias))
+               {
+                  const badEntries = [];
+                  const entries = [];
+
+                  flags.alias.forEach((entry) =>
+                  {
+                     const matches = regex.exec(entry);
+                     if (matches !== null && matches.length >= 3)
+                     {
+                        entries.push({ find: matches[1], replacement: matches[2] });
+                     }
+                     else
+                     {
+                        badEntries.push(entry);
+                     }
+                  });
+
+                  flags.alias = entries;
+
+                  if (badEntries.length > 0)
+                  {
+                     const error = new Error(`plugin-alias verify; can not parse ${JSON.stringify(badEntries)} each `
+                      + `entry must be in the format of <xxx>=<yyy>.`);
+
+                     error.$$bundler_fatal = false;
+
+                     throw error;
+                  }
+               }
             }
          });
          break;
