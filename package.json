@@ -3,7 +3,7 @@
   "description": "Provides an Oclif plugin to configure @rollup/plugin-alias for rollup-runner.",
   "version": "0.0.0",
   "author": "typhonrt",
-  "bugs": "https://github.com/typhonjs-node-bundle/plugin-alias/issues",
+  "bugs": "https://github.com/typhonjs-node-bundle/npmbundle/issues",
   "dependencies": {
     "@oclif/command": "^1.8.0",
     "@rollup/plugin-alias": "^3.0.0"
