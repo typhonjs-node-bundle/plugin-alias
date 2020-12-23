@@ -71,7 +71,7 @@ function s_ADD_FLAGS(command)
             flags: {
                alias: flags.string({
                   'char': 'a',
-                  'description': 'Map imports to different modules',
+                  'description': 'Map imports to different modules.',
                   'multiple': true
                })
             }
