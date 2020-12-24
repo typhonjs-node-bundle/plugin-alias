@@ -40,7 +40,7 @@ module.exports = async function(opts)
 {
    try
    {
-      process.pluginManager.add({ name: 'plugin-alias', instance: PluginHandler });
+      global.$$pluginManager.add({ name: 'plugin-alias', instance: PluginHandler });
 
       // Adds flags for various built in commands like `build`.
       s_ADD_FLAGS(opts.id);
@@ -67,6 +67,9 @@ module.exports = async function(opts)
  * splitting the left and right hand values formatting the output into the key / value arrangement expected by
  * `@rollup/plugin-alias`. Errors  will be thrown if the formatting is incorrect.
  *
+ * Added flags include:
+ * `--alias`   - `-a` - Map imports to different modules..  - default:           - env: DEPLOY_ALIAS
+ *
  * @param {string} command - ID of the command being run.
  */
 function s_ADD_FLAGS(command)
@@ -75,7 +78,7 @@ function s_ADD_FLAGS(command)
    {
       // Add all built in flags for the build command.
       case 'build':
-         process.eventbus.trigger('oclif:system:flaghandler:add', {
+         global.$$eventbus.trigger('typhonjs:oclif:system:flaghandler:add', {
             command,
             plugin: 'plugin-alias',
             flags: {
@@ -119,6 +122,15 @@ function s_ADD_FLAGS(command)
                   }
                })
             },
+
+            /**
+             * Verifies the `alias` flag and checks that the data loaded is an array, and then attempts to parse each
+             * entry. If an entry is not a string in the format of <xxx>=<yyy> an error is generated. An error is also
+             * generated if an entry overwrites a previous entry which occurs when there are multiple left hand values
+             * of the same string.
+             *
+             * @param {object}   flags - The CLI flags to verify.
+             */
             verify: function(flags)
             {
                const regex = /(.+)=(.+)/;
@@ -127,14 +139,30 @@ function s_ADD_FLAGS(command)
                if (Array.isArray(flags.alias))
                {
                   const badEntries = [];
+                  const warnEntries = [];
+
                   const entries = [];
 
                   flags.alias.forEach((entry) =>
                   {
                      const matches = regex.exec(entry);
+
                      if (matches !== null && matches.length >= 3)
                      {
-                        entries.push({ find: matches[1], replacement: matches[2] });
+                        // We need to test each previous entry in the entries array to detect any left hand
+                        // values that may override previously set values. Since entries are objects and we need to
+                        // test `{ find: ??? }` against `matches[1]` we can accomplish this with a reducer function
+                        // which starts off false, but accumulates a boolean by _or equals_ such that once accum is
+                        // true it stays true. This allows us to accomplish this task in the line below with easier
+                        // control flow. Now you know!
+                        if (entries.reduce((accum, value) => accum |= value.find === matches[1], false))
+                        {
+                           warnEntries.push(entry);
+                        }
+                        else
+                        {
+                           entries.push({ find: matches[1], replacement: matches[2] });
+                        }
                      }
                      else
                      {
@@ -144,11 +172,25 @@ function s_ADD_FLAGS(command)
 
                   flags.alias = entries;
 
+                  let errorMessage = 'plugin-alias verification failure:\n';
+
                   if (badEntries.length > 0)
                   {
-                     const error = new Error(`plugin-alias verify; can not parse ${JSON.stringify(badEntries)} each `
-                      + `entry must be in the format of <xxx>=<yyy>.`);
+                     errorMessage += `- can not parse ${JSON.stringify(badEntries)} each `
+                      + `entry must be a 'string' in the format of '<xxx>=<yyy>'.`;
+                  }
 
+                  if (warnEntries.length > 0)
+                  {
+                     errorMessage += `${badEntries.length > 0 ? '\n' : ''}- the following `
+                      + `entries overwrite previous entries ${JSON.stringify(warnEntries)}.`;
+                  }
+
+                  if (errorMessage !== 'plugin-alias verification failure:\n')
+                  {
+                     const error = new Error(errorMessage);
+
+                     // Set magic boolean for global CLI error handler to skip treating this as a fatal error.
                      error.$$bundler_fatal = false;
 
                      throw error;
