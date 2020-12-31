@@ -13,16 +13,16 @@ class PluginHandler
    /**
     * Returns the configured input plugin for `@rollup/plugin-alias`
     *
-    * @param {object} config        - The CLI config
-    * @param {object} config.flags  - The CLI config
+    * @param {object} bundleData          - The CLI config
+    * @param {object} bundleData.cliFlags - The CLI config
     *
     * @returns {object} Rollup plugin
     */
-   static getInputPlugin(config = {})
+   static getInputPlugin(bundleData = {})
    {
-      if (config.flags && typeof config.flags.alias === 'object')
+      if (bundleData.cliFlags && typeof bundleData.cliFlags.alias === 'object')
       {
-         return alias(config.flags.alias);
+         return alias(bundleData.cliFlags.alias);
       }
    }
 
