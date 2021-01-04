@@ -57,8 +57,7 @@ module.exports = async function(opts)
       // Adds flags for various built in commands like `build`.
       s_ADD_FLAGS(opts.id);
 
-      // TODO REMOVE
-      process.stdout.write(`plugin-alias init hook running ${opts.id}\n`);
+      global.$$eventbus.trigger('log:debug', `plugin-alias init hook running '${opts.id}'.`);
    }
    catch (error)
    {
