@@ -6,7 +6,8 @@
   "bugs": "https://github.com/typhonjs-node-rollup/issues/issues",
   "dependencies": {
     "@oclif/command": "^1.8.0",
-    "@rollup/plugin-alias": "^3.0.0"
+    "@rollup/plugin-alias": "^3.0.0",
+    "@typhonjs-node-bundle/oclif-commons": "typhonjs-node-bundle/oclif-commons#main"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.26.0",

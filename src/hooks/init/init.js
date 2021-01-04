@@ -1,6 +1,6 @@
-const alias       = require('@rollup/plugin-alias');
-
-const { flags }   = require('@oclif/command');
+const alias             = require('@rollup/plugin-alias');
+const { flags }         = require('@oclif/command');
+const { NonFatalError } = require('@typhonjs-node-bundle/oclif-commons');
 
 /**
  * Handles interfacing with the plugin manager adding event bindings to pass back a configured
@@ -108,23 +108,12 @@ function s_ADD_FLAGS(command)
                         try { result = JSON.parse(process.env.DEPLOY_ALIAS); }
                         catch (error)
                         {
-                           const parseError = new Error(
-                            `Could not parse 'DEPLOY_ALIAS' as a JSON array;\n${error.message}`);
-
-                           // Set magic boolean for global CLI error handler to skip treating this as a fatal error.
-                           parseError.$$bundler_fatal = false;
-
-                           throw parseError;
+                           throw new NonFatalError(`Could not parse 'DEPLOY_ALIAS' as a JSON array;\n${error.message}`);
                         }
 
                         if (!Array.isArray(result))
                         {
-                           const parseError = new Error(`Please format 'DEPLOY_ALIAS' as a JSON array.`);
-
-                           // Set magic boolean for global CLI error handler to skip treating this as a fatal error.
-                           parseError.$$bundler_fatal = false;
-
-                           throw parseError;
+                           throw new NonFatalError(`Please format 'DEPLOY_ALIAS' as a JSON array.`);
                         }
 
                         return result;
@@ -200,12 +189,7 @@ function s_ADD_FLAGS(command)
 
                   if (errorMessage !== 'plugin-alias verification failure:\n')
                   {
-                     const error = new Error(errorMessage);
-
-                     // Set magic boolean for global CLI error handler to skip treating this as a fatal error.
-                     error.$$bundler_fatal = false;
-
-                     throw error;
+                     throw new NonFatalError(errorMessage);
                   }
                }
             }
