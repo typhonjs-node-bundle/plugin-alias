@@ -26,6 +26,7 @@
   "engines": {
     "node": ">=8.0.0"
   },
+  "main": "src/loader/PluginLoader.js",
   "files": [
     "/npm-shrinkwrap.json",
     "/oclif.manifest.json",
