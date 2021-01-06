@@ -22,7 +22,7 @@ class PluginLoader
     *
     * @returns {string[]}
     */
-   static get rollupPlugins() { return ['rollup-plugin-string']; }
+   static get rollupPlugins() { return ['@rollup/plugin-alias']; }
 
    /**
     * Adds flags for various built in commands like `build`.
