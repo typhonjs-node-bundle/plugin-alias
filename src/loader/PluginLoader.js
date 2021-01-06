@@ -51,7 +51,7 @@ class PluginLoader
          case 'bundle':
             eventbus.trigger('typhonjs:oclif:system:flaghandler:add', {
                command,
-               plugin: 'plugin-alias',
+               plugin: PluginLoader.pluginName,
                flags: {
                   alias: flags.string({
                      'char': 'a',
