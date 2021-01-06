@@ -47,10 +47,6 @@
   "repository": "typhonjs-node-rollup/plugin-alias",
   "scripts": {
     "eslint": "eslint .",
-    "postpack": "rm -f oclif.manifest.json",
-    "posttest": "eslint .",
-    "prepack": "oclif-dev manifest && oclif-dev readme",
-    "test": "nyc mocha --forbid-only \"test/**/*.test.js\"",
-    "version": "oclif-dev readme && git add README.md"
+    "test": "nyc mocha --forbid-only \"test/**/*.test.js\""
   }
 }
