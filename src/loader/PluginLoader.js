@@ -11,6 +11,20 @@ const { NonFatalError } = require('@typhonjs-node-bundle/oclif-commons');
 class PluginLoader
 {
    /**
+    * Returns the `package.json` module name.
+    *
+    * @returns {string[]}
+    */
+   static get pluginName() { return ['@typhonjs-node-rollup/plugin-alias']; }
+
+   /**
+    * Returns the rollup plugins managed.
+    *
+    * @returns {string[]}
+    */
+   static get rollupPlugins() { return ['rollup-plugin-string']; }
+
+   /**
     * Adds flags for various built in commands like `build`.
     *
     * To add handling of the *.env environment variables a double processing stage occurs in fvttdev build command. The
