@@ -11,7 +11,7 @@ module.exports = async function(options)
 {
    try
    {
-      global.$$pluginManager.add({ name: PluginLoader.pluginName, instance: PluginLoader, options });
+      global.$$pluginManager.add({ name: PluginLoader.packageName, instance: PluginLoader });
 
       global.$$eventbus.trigger('log:debug', `plugin-alias init hook running '${options.id}'.`);
    }

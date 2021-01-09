@@ -2,6 +2,9 @@ const alias             = require('@rollup/plugin-alias');
 const { flags }         = require('@oclif/command');
 const { NonFatalError } = require('@typhonjs-node-bundle/oclif-commons');
 
+const s_CONFLICT_PACKAGES = ['@rollup/plugin-alias'];
+const s_PACKAGE_NAME = '@typhonjs-node-rollup/plugin-alias';
+
 /**
  * Handles interfacing with the plugin manager adding event bindings to pass back a configured
  * instance of `@rollup/plugin-alias`.
@@ -11,18 +14,18 @@ const { NonFatalError } = require('@typhonjs-node-bundle/oclif-commons');
 class PluginLoader
 {
    /**
+    * Returns the any modules that cause a conflict.
+    *
+    * @returns {string[]}
+    */
+   static get conflictPackages() { return s_CONFLICT_PACKAGES; }
+
+   /**
     * Returns the `package.json` module name.
     *
     * @returns {string}
     */
-   static get pluginName() { return '@typhonjs-node-rollup/plugin-alias'; }
-
-   /**
-    * Returns the rollup plugins managed.
-    *
-    * @returns {string[]}
-    */
-   static get rollupPlugins() { return ['@rollup/plugin-alias']; }
+   static get packageName() { return s_PACKAGE_NAME; }
 
    /**
     * Adds flags for various built in commands like `build`.
@@ -40,125 +43,118 @@ class PluginLoader
     * Added flags include:
     * `--alias`   - `-a` - Map imports to different modules..  - default:           - env: {prefix}_ALIAS
     *
-    * @param {string} command - ID of the command being run.
     * @param {object} eventbus - The eventbus to add flags to.
     */
-   static addFlags(command, eventbus)
+   static addFlags(eventbus)
    {
-      switch (command)
-      {
-         // Add all built in flags for the build command.
-         case 'bundle':
-            eventbus.trigger('typhonjs:oclif:system:flaghandler:add', {
-               command,
-               plugin: PluginLoader.pluginName,
-               flags: {
-                  alias: flags.string({
-                     'char': 'a',
-                     'description': 'Map imports to different modules.',
-                     'multiple': true,
-                     'default': function()
-                     {
-                        const envVar = `${global.$$flag_env_prefix}_ALIAS`;
-
-                        if (typeof process.env[envVar] === 'string')
-                        {
-                           let result = void 0;
-
-                           // Treat it as a JSON array.
-                           try { result = JSON.parse(process.env[envVar]); }
-                           catch (error)
-                           {
-                              throw new NonFatalError(
-                               `Could not parse '${envVar}' as a JSON array;\n${error.message}`);
-                           }
-
-                           if (!Array.isArray(result))
-                           {
-                              throw new NonFatalError(`Please format '${envVar}' as a JSON array.`);
-                           }
-
-                           return result;
-                        }
-
-                        return void 0;
-                     }
-                  })
-               },
-
-               /**
-                * Verifies the `alias` flag and checks that the data loaded is an array, and then attempts to parse
-                * each
-                * entry. If an entry is not a string in the format of <xxx>=<yyy> an error is generated. An error is
-                * also generated if an entry overwrites a previous entry which occurs when there are multiple left hand
-                * values of the same string.
-                *
-                * @param {object}   flags - The CLI flags to verify.
-                */
-               verify: function(flags)
+      eventbus.trigger('typhonjs:oclif:system:flaghandler:add', {
+         command: 'bundle',
+         pluginName: PluginLoader.packageName,
+         flags: {
+            alias: flags.string({
+               'char': 'a',
+               'description': 'Map imports to different modules.',
+               'multiple': true,
+               'default': function()
                {
-                  const regex = /(.+)=(.+)/;
+                  const envVar = `${global.$$flag_env_prefix}_ALIAS`;
 
-                  // Alias should always be an array
-                  if (Array.isArray(flags.alias))
+                  if (typeof process.env[envVar] === 'string')
                   {
-                     const badEntries = [];
-                     const warnEntries = [];
+                     let result = void 0;
 
-                     const entries = [];
-
-                     flags.alias.forEach((entry) =>
+                     // Treat it as a JSON array.
+                     try { result = JSON.parse(process.env[envVar]); }
+                     catch (error)
                      {
-                        const matches = regex.exec(entry);
-
-                        if (matches !== null && matches.length >= 3)
-                        {
-                           // We need to test each previous entry in the entries array to detect any left hand
-                           // values that may override previously set values. Since entries are objects and we need to
-                           // test `{ find: ??? }` against `matches[1]` we can accomplish this with a reducer function
-                           // which starts off false, but accumulates a boolean by _or equals_ such that once accum is
-                           // true it stays true. This allows us to accomplish this task in the line below with easier
-                           // control flow. Now you know!
-                           if (entries.reduce((accum, value) => accum |= value.find === matches[1], false))
-                           {
-                              warnEntries.push(entry);
-                           }
-                           else
-                           {
-                              entries.push({ find: matches[1], replacement: matches[2] });
-                           }
-                        }
-                        else
-                        {
-                           badEntries.push(entry);
-                        }
-                     });
-
-                     flags.alias = { entries };
-
-                     let errorMessage = 'plugin-alias verification failure:\n';
-
-                     if (badEntries.length > 0)
-                     {
-                        errorMessage += `- can not parse ${JSON.stringify(badEntries)} each `
-                           + `entry must be a 'string' in the format of '<xxx>=<yyy>'.`;
+                        throw new NonFatalError(
+                         `Could not parse '${envVar}' as a JSON array;\n${error.message}`);
                      }
 
-                     if (warnEntries.length > 0)
+                     if (!Array.isArray(result))
                      {
-                        errorMessage += `${badEntries.length > 0 ? '\n' : ''}- the following `
-                           + `entries overwrite previous entries ${JSON.stringify(warnEntries)}.`;
+                        throw new NonFatalError(`Please format '${envVar}' as a JSON array.`);
                      }
 
-                     if (errorMessage !== 'plugin-alias verification failure:\n')
+                     return result;
+                  }
+
+                  return void 0;
+               }
+            })
+         },
+
+         /**
+          * Verifies the `alias` flag and checks that the data loaded is an array, and then attempts to parse
+          * each
+          * entry. If an entry is not a string in the format of <xxx>=<yyy> an error is generated. An error is
+          * also generated if an entry overwrites a previous entry which occurs when there are multiple left hand
+          * values of the same string.
+          *
+          * @param {object}   flags - The CLI flags to verify.
+          */
+         verify: function(flags)
+         {
+            const regex = /(.+)=(.+)/;
+
+            // Alias should always be an array
+            if (Array.isArray(flags.alias))
+            {
+               const badEntries = [];
+               const warnEntries = [];
+
+               const entries = [];
+
+               flags.alias.forEach((entry) =>
+               {
+                  const matches = regex.exec(entry);
+
+                  if (matches !== null && matches.length >= 3)
+                  {
+                     // We need to test each previous entry in the entries array to detect any left hand
+                     // values that may override previously set values. Since entries are objects and we need to
+                     // test `{ find: ??? }` against `matches[1]` we can accomplish this with a reducer function
+                     // which starts off false, but accumulates a boolean by _or equals_ such that once accum is
+                     // true it stays true. This allows us to accomplish this task in the line below with easier
+                     // control flow. Now you know!
+                     if (entries.reduce((accum, value) => accum |= value.find === matches[1], false))
                      {
-                        throw new NonFatalError(errorMessage);
+                        warnEntries.push(entry);
+                     }
+                     else
+                     {
+                        entries.push({ find: matches[1], replacement: matches[2] });
                      }
                   }
+                  else
+                  {
+                     badEntries.push(entry);
+                  }
+               });
+
+               flags.alias = { entries };
+
+               let errorMessage = 'plugin-alias verification failure:\n';
+
+               if (badEntries.length > 0)
+               {
+                  errorMessage += `- can not parse ${JSON.stringify(badEntries)} each `
+                     + `entry must be a 'string' in the format of '<xxx>=<yyy>'.`;
                }
-            });
-            break;
-      }
+
+               if (warnEntries.length > 0)
+               {
+                  errorMessage += `${badEntries.length > 0 ? '\n' : ''}- the following `
+                     + `entries overwrite previous entries ${JSON.stringify(warnEntries)}.`;
+               }
+
+               if (errorMessage !== 'plugin-alias verification failure:\n')
+               {
+                  throw new NonFatalError(errorMessage);
+               }
+            }
+         }
+      });
    }
 
    /**
@@ -190,7 +186,7 @@ class PluginLoader
    {
       ev.eventbus.on('typhonjs:oclif:bundle:plugins:main:input:get', PluginLoader.getInputPlugin, PluginLoader);
 
-      PluginLoader.addFlags(ev.pluginOptions.id, ev.eventbus);
+      PluginLoader.addFlags(ev.eventbus);
    }
 }
 
