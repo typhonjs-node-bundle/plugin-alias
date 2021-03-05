@@ -25,7 +25,7 @@
     "rollup": "^2.x"
   },
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=14.0.0"
   },
   "main": "src/loader/PluginLoader.js",
   "files": [
@@ -40,8 +40,8 @@
   "license": "MPL-2.0",
   "oclif": {
     "hooks": {
-      "init": [
-        "./src/hooks/init/init"
+      "bundle:load:plugins": [
+        "./src/hooks/bundle-load-plugins"
       ]
     }
   },

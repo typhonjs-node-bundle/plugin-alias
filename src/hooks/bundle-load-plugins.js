@@ -1,4 +1,4 @@
-import PluginLoader from '../../loader/PluginLoader.js';
+import PluginLoader from '../loader/PluginLoader.js';
 
 /**
  * Oclif init hook to add PluginHandler to plugin manager.
