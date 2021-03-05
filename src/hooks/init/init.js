@@ -1,4 +1,4 @@
-const PluginLoader = require('../../loader/PluginLoader');
+import PluginLoader from '../../loader/PluginLoader.js';
 
 /**
  * Oclif init hook to add PluginHandler to plugin manager.
@@ -7,7 +7,7 @@ const PluginLoader = require('../../loader/PluginLoader');
  *
  * @returns {Promise<void>}
  */
-module.exports = async function(options)
+export default async function(options)
 {
    try
    {
@@ -19,4 +19,4 @@ module.exports = async function(options)
    {
       this.error(error);
    }
-};
+}

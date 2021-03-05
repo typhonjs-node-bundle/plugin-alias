@@ -1,6 +1,6 @@
-const alias             = require('@rollup/plugin-alias');
-const { flags }         = require('@oclif/command');
-const { NonFatalError } = require('@typhonjs-node-bundle/oclif-commons');
+import alias             from '@rollup/plugin-alias';
+import { flags }         from '@oclif/command';
+import { NonFatalError } from '@typhonjs-node-bundle/oclif-commons';
 
 const s_CONFLICT_PACKAGES = ['@rollup/plugin-alias'];
 const s_PACKAGE_NAME = '@typhonjs-node-rollup/plugin-alias';
@@ -11,7 +11,7 @@ const s_PACKAGE_NAME = '@typhonjs-node-rollup/plugin-alias';
  *
  * @example fvttdev build --alias somepackage=newpackage'
  */
-class PluginLoader
+export default class PluginLoader
 {
    /**
     * Returns the any modules that cause a conflict.
@@ -189,5 +189,3 @@ class PluginLoader
       PluginLoader.addFlags(ev.eventbus);
    }
 }
-
-module.exports = PluginLoader;
