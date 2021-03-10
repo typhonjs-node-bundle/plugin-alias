@@ -187,6 +187,6 @@ export default class PluginLoader
    {
       ev.eventbus.on('typhonjs:oclif:bundle:plugins:main:input:get', PluginLoader.getInputPlugin, PluginLoader);
 
-      PluginLoader.addFlags(ev.eventbus, ev.pluginOptions.oclifFlags);
+      PluginLoader.addFlags(ev.eventbus, ev.pluginOptions.flags);
    }
 }
