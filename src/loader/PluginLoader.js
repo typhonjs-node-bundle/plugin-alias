@@ -1,6 +1,6 @@
 import alias             from '@rollup/plugin-alias';
 
-import { NonFatalError } from '@typhonjs-node-bundle/oclif-commons';
+import { NonFatalError } from '@typhonjs-oclif/core';
 
 const s_CONFLICT_PACKAGES = ['@rollup/plugin-alias'];
 const s_PACKAGE_NAME = '@typhonjs-node-rollup/plugin-alias';
