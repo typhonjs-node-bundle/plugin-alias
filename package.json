@@ -7,7 +7,7 @@
   "type": "module",
   "dependencies": {
     "@rollup/plugin-alias": "^3.0.0",
-    "@typhonjs-oclif/core": "typhonjs-oclif/core#main"
+    "@typhonjs-oclif/errors": "^0.0.0"
   },
   "devDependencies": {
     "chai": "^4.2.0",
