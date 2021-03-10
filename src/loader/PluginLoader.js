@@ -1,5 +1,5 @@
 import alias             from '@rollup/plugin-alias';
-import { flags }         from '@oclif/command';
+
 import { NonFatalError } from '@typhonjs-node-bundle/oclif-commons';
 
 const s_CONFLICT_PACKAGES = ['@rollup/plugin-alias'];
@@ -44,8 +44,9 @@ export default class PluginLoader
     * `--alias`   - `-a` - Map imports to different modules..  - default:           - env: {prefix}_ALIAS
     *
     * @param {object} eventbus - The eventbus to add flags to.
+    * @param {object} flags - The Oclif flags generator.
     */
-   static addFlags(eventbus)
+   static addFlags(eventbus, flags)
    {
       eventbus.trigger('typhonjs:oclif:system:flaghandler:add', {
          command: 'bundle',
@@ -186,6 +187,6 @@ export default class PluginLoader
    {
       ev.eventbus.on('typhonjs:oclif:bundle:plugins:main:input:get', PluginLoader.getInputPlugin, PluginLoader);
 
-      PluginLoader.addFlags(ev.eventbus);
+      PluginLoader.addFlags(ev.eventbus, ev.pluginOptions.oclifFlags);
    }
 }

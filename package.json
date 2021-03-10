@@ -6,14 +6,10 @@
   "bugs": "https://github.com/typhonjs-node-rollup/issues/issues",
   "type": "module",
   "dependencies": {
-    "@oclif/command": "^1.8.0",
     "@rollup/plugin-alias": "^3.0.0",
     "@typhonjs-node-bundle/oclif-commons": "typhonjs-node-bundle/oclif-commons#main"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.26.0",
-    "@oclif/plugin-help": "^3.2.1",
-    "@oclif/test": "^1.2.8",
     "chai": "^4.2.0",
     "eslint": "^5.16.0",
     "globby": "^10.0.2",
