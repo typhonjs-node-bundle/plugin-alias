@@ -9,28 +9,28 @@ const s_PACKAGE_NAME = '@typhonjs-node-rollup/plugin-alias';
  * Handles interfacing with the plugin manager adding event bindings to pass back a configured
  * instance of `@rollup/plugin-alias`.
  *
- * @example fvttdev build --alias somepackage=newpackage'
+ * @example fvttdev bundle --alias somepackage=newpackage'
  */
 export default class PluginLoader
 {
    /**
     * Returns the any modules that cause a conflict.
     *
-    * @returns {string[]}
+    * @returns {string[]} An array of conflicting packages.
     */
    static get conflictPackages() { return s_CONFLICT_PACKAGES; }
 
    /**
     * Returns the `package.json` module name.
     *
-    * @returns {string}
+    * @returns {string} Package name.
     */
    static get packageName() { return s_PACKAGE_NAME; }
 
    /**
     * Adds flags for various built in commands like `build`.
     *
-    * To add handling of the *.env environment variables a double processing stage occurs in fvttdev build command. The
+    * To add handling of the *.env environment variables a double processing stage occurs in fvttdev bundle command. The
     * flags are processed to pull out the --env flag then if present `dotenv` is used to load the given *.env file.
     * We take advantage of the `default` definition for the `alias` flag below by providing a function that checks the
     * associated environment variable `DEPLOY_ALIAS`. If it is present then it is treated as a JSON array and any
