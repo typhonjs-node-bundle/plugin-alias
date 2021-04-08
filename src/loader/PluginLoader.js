@@ -49,7 +49,7 @@ export default class PluginLoader
     */
    static addFlags(eventbus, flags)
    {
-      eventbus.trigger('typhonjs:oclif:system:flaghandler:add', {
+      eventbus.trigger('typhonjs:oclif:handler:flag', {
          command: 'bundle',
          pluginName: PluginLoader.packageName,
          flags: {
