@@ -1,24 +1,19 @@
 {
-  "name": "@typhonjs-node-rollup/plugin-alias",
+  "name": "@typhonjs-oclif-rollup/plugin-alias",
   "description": "Provides an Oclif plugin to configure @rollup/plugin-alias for rollup-runner.",
   "version": "0.0.1",
-  "author": "typhonrt",
-  "bugs": "https://github.com/typhonjs-node-rollup/issues/issues",
+  "author": "Michael Leahy <support@typhonjs.io> (https://github.com/typhonrt)",
+  "bugs": "https://github.com/typhonjs-oclif-rollup/issues/issues",
   "type": "module",
-  "maintainers": [
-    {
-      "name": "Michael Leahy",
-      "email": "support@typhonjs.io",
-      "url": "https://github.com/typhonrt"
-    }
+  "contributors": [
+    "Michael Leahy <support@typhonjs.io> (https://github.com/typhonrt)"
   ],
   "dependencies": {
     "@rollup/plugin-alias": "^3.0.0",
     "@typhonjs-oclif/errors": "^0.0.0"
   },
   "devDependencies": {
-    "@typhonjs-config/eslint-config": "^0.2.0",
-    "eslint": "^7.0.0"
+    "@typhonjs-utils/build-test": "^0.1.0"
   },
   "peerDependencies": {
     "rollup": "^2.x"
@@ -31,9 +26,10 @@
     "/npm-shrinkwrap.json",
     "/src"
   ],
-  "homepage": "https://github.com/typhonjs-node-rollup/plugin-alias",
+  "homepage": "https://github.com/typhonjs-oclif-rollup/plugin-alias",
   "keywords": [
     "typhonjs",
+    "oclif",
     "rollup",
     "alias",
     "oclif-plugin"
@@ -46,7 +42,7 @@
       ]
     }
   },
-  "repository": "typhonjs-node-rollup/plugin-alias",
+  "repository": "github:typhonjs-oclif-rollup/plugin-alias",
   "scripts": {
     "eslint": "eslint .",
     "prepack": "npm run eslint"
