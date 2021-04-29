@@ -11,7 +11,7 @@ export default async function(options)
 {
    try
    {
-      await globalThis.$$pluginManager.addAsync({ name: PluginLoader.packageName, instance: PluginLoader,
+      await globalThis.$$pluginManager.add({ name: PluginLoader.packageName, instance: PluginLoader,
        options: { id: options.id, flagsModule: options.flagsModule } });
 
       globalThis.$$eventbus.trigger('log:debug', `plugin-alias init hook running '${options.id}'.`);
