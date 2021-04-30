@@ -3,7 +3,7 @@ import alias             from '@rollup/plugin-alias';
 import { NonFatalError } from '@typhonjs-oclif/errors';
 
 const s_CONFLICT_PACKAGES = ['@rollup/plugin-alias'];
-const s_PACKAGE_NAME = '@typhonjs-node-rollup/plugin-alias';
+const s_PACKAGE_NAME = '@typhonjs-oclif-rollup/plugin-alias';
 
 /**
  * Handles interfacing with the plugin manager adding event bindings to pass back a configured
@@ -49,7 +49,7 @@ export default class PluginLoader
     */
    static addFlags(eventbus, flags)
    {
-      eventbus.trigger('typhonjs:oclif:handler:flag:add', {
+      eventbus.trigger('typhonjs:oclif:system:handler:flag:add', {
          command: 'bundle',
          pluginName: PluginLoader.packageName,
          flags: {
@@ -161,7 +161,7 @@ export default class PluginLoader
    }
 
    /**
-    * Returns the configured input plugin for `@rollup/plugin-alias`
+    * Returns the configured input plugin for `@rollup/plugin-alias`.
     *
     * @param {object} bundleData          - The CLI config
     * @param {object} bundleData.cliFlags - The CLI config
