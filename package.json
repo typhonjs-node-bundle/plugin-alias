@@ -45,6 +45,6 @@
   "bugs": "https://github.com/typhonjs-oclif-rollup/issues/issues",
   "scripts": {
     "eslint": "eslint .",
-    "prepack": "npm run eslint"
+    "prepublishOnly": "npm run eslint"
   }
 }
