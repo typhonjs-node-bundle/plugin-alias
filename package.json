@@ -1,7 +1,7 @@
 {
   "name": "@typhonjs-oclif-rollup/plugin-alias",
   "description": "Provides an Oclif plugin to configure @rollup/plugin-alias for rollup-runner.",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "author": "Michael Leahy <support@typhonjs.io> (https://github.com/typhonrt)",
   "type": "module",
   "main": "src/loader/PluginLoader.js",
